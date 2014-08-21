@@ -9,11 +9,14 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.remoting.service.AmqpInvokerServiceExporter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableAutoConfiguration
 public class ServerApplication {
 
 	final static String queueName = Constants.queueName;
@@ -26,12 +29,8 @@ public class ServerApplication {
 		return connectionFactory;
 	}
 
-	@Bean
-	public RabbitTemplate rabbitTemplate() {
-		RabbitTemplate template = new RabbitTemplate(connectionFactory());
-		//template.setQueue(queueName);
-		return template;
-	}
+	@Autowired
+	RabbitTemplate rabbitTemplate;
 
 	@Bean
 	public DirectExchange exchange() {
@@ -58,7 +57,7 @@ public class ServerApplication {
 		AmqpInvokerServiceExporter serviceExporter = new AmqpInvokerServiceExporter();
 		serviceExporter.setService(CalculationService.class);
 		serviceExporter.setService(service());
-		serviceExporter.setAmqpTemplate(rabbitTemplate());
+		serviceExporter.setAmqpTemplate(rabbitTemplate);
 		return serviceExporter;
 	}
 
