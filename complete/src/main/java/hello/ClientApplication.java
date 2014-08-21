@@ -27,7 +27,7 @@ public class ClientApplication {
 	}
 
 	@Bean
-	public Client sender() {
+	public Client client() {
 		return new Client();
 	}
 

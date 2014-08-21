@@ -68,50 +68,44 @@ You should see something like this:
 ....
 
 [[initial]]
+== Create a service
+`src/main/java/hello/CalculationService.java`
+[source,java]
+----
+include::complete/src/main/java/hello/CalculationService.java[]
+----
+
+== Create the service implementation
+`src/main/java/hello/CalculationServiceImpl.java`
+[source,java]
+----
+include::complete/src/main/java/hello/CalculationServiceImpl.java[]
+----
+
+== Create a RabbitMQ RPC server application
+`src/main/java/hello/ServerApplication.java`
+[source,java]
+----
+include::complete/src/main/java/hello/ServerApplication.java[]
+----
+
+== Create a RabbitMQ RPC client application
+`src/main/java/hello/ClientApplication.java`
+[source,java]
+----
+include::complete/src/main/java/hello/ClientApplication.java[]
+----
+
+
 == Create a RabbitMQ RPC client 
-
-With any messaging-based application, you need to create a receiver that will respond to published messages.
-
 `src/main/java/hello/Client.java`
 [source,java]
 ----
 include::complete/src/main/java/hello/Client.java[]
 ----
 
-The `Client` is a simple POJO that defines a methods for calling the service. When you register it, you can name it anything you want.
 
-== Register the listener and send a message
-
-Spring AMQP's `RabbitTemplate` provides everything you need to send and receive messages with RabbitMQ. Specifically, you need to configure:
-
-- A message listener container
-- Declare the queue, the exchange, and the binding between them
-
-NOTE: Spring Boot automatically creates a connection factory and a RabbitTemplate, reducing the amount of code you have to write.
-
-You'll use `RabbitTemplate` to send messages, and you will register a `Receiver` with the message listener container to receive messages. The connection factory drives both, allowing them to connect to the RabbitMQ server. 
-
-`src/main/java/hello/Application.java`
-[source,java]
-----
-include::complete/src/main/java/hello/Application.java[]
-----
-
-The bean defined in the `listenerAdapter()` method is registered as a message listener in the container defined in `container()`. It will listen for messages on the "remoting.queue" queue. Because the `Client` class is a POJO, it needs to be wrapped in the `MessageListenerAdapter`, where you specify it to invoke `receiveMessage`.
-
-NOTE: JMS queues and AMQP queues have different semantics. For example, JMS sends queued messages to only one consumer. While AMQP queues do the same thing, AMQP producers don't send messages directly to queues. Instead, a message is sent to an exchange, which can go to a single queue, or fanout to multiple queues, emulating the concept of JMS topics. For more, see link:/understanding/AMQP[Understanding AMQP].
-
-The message listener container and receiver beans are all you need to listen for messages. To send a message, you also need a Rabbit template.
-
-The `queue()` method creates an AMQP queue. The `exchange()` method creates a topic exchange. The `binding()` method binds these two together, defining the behavior that occurs when RabbitTemplate publishes to an exchange.
-
-NOTE: Spring AMQP requires that the `Queue`, the `TopicExchange`, and the `Binding` be declared as top level Spring beans in order to be set up properly.
-
-The `main()` method starts that process by creating a Spring application context. This starts the message listener container, which will start listening for messages. It then retrieves the `RabbitTemplate` from the application context, waits five seconds, and sends a "Hello from RabbitMQ!" message on the "chat" queue. Finally, the container closes the Spring application context and the application ends.
-
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/build_an_executable_jar_mainhead.adoc[]
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/build_an_executable_jar_with_both.adoc[]
-
+Run the server application, than run the client application.
 You should see output like this:
 
 	91 + 96 =187.0
