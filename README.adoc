@@ -6,12 +6,12 @@ projects: [spring-amqp]
 :toc:
 :icons: font
 :source-highlighter: prettify
-:project_id: gs-messaging-rabbitmq
-This guide walks you through the process of setting up a RabbitMQ AMQP server that  publishes and subscribes to messages.
+:project_id: gs-rpc-rabbitmq
+This guide walks you through the process of setting up a RabbitMQ AMQP server and clinet for RPC calls.
 
 == What you'll build
 
-You'll build an application that publishes a message using Spring AMQP's `RabbitTemplate` and subscribes to the message on a POJO using `MessageListenerAdapter`.
+You'll build an  server application and a client application that calls the server using Spring AMQP's `RabbitTemplate`.
 
 == What you'll need
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/prereq_editor_jdk_buildtools.adoc[]
