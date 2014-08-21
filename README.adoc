@@ -68,19 +68,17 @@ You should see something like this:
 ....
 
 [[initial]]
-== Create a RabbitMQ message receiver
+== Create a RabbitMQ RPC client 
 
 With any messaging-based application, you need to create a receiver that will respond to published messages.
 
-`src/main/java/hello/Receiver.java`
+`src/main/java/hello/Client.java`
 [source,java]
 ----
-include::complete/src/main/java/hello/Receiver.java[]
+include::complete/src/main/java/hello/Client.java[]
 ----
 
-The `Receiver` is a simple POJO that defines a method for receiving messages. When you register it to receive messages, you can name it anything you want.
-
-NOTE: For convenience, this POJO also has an autowired `AnnotationConfigApplicationContext`. This empowers it to shutdown the app once the message is receive. This is something you are not likely to implement in a production application.
+The `Client` is a simple POJO that defines a methods for calling the service. When you register it, you can name it anything you want.
 
 == Register the listener and send a message
 
@@ -99,7 +97,7 @@ You'll use `RabbitTemplate` to send messages, and you will register a `Receiver`
 include::complete/src/main/java/hello/Application.java[]
 ----
 
-The bean defined in the `listenerAdapter()` method is registered as a message listener in the container defined in `container()`. It will listen for messages on the "chat" queue. Because the `Receiver` class is a POJO, it needs to be wrapped in the `MessageListenerAdapter`, where you specify it to invoke `receiveMessage`.
+The bean defined in the `listenerAdapter()` method is registered as a message listener in the container defined in `container()`. It will listen for messages on the "remoting.queue" queue. Because the `Client` class is a POJO, it needs to be wrapped in the `MessageListenerAdapter`, where you specify it to invoke `receiveMessage`.
 
 NOTE: JMS queues and AMQP queues have different semantics. For example, JMS sends queued messages to only one consumer. While AMQP queues do the same thing, AMQP producers don't send messages directly to queues. Instead, a message is sent to an exchange, which can go to a single queue, or fanout to multiple queues, emulating the concept of JMS topics. For more, see link:/understanding/AMQP[Understanding AMQP].
 
@@ -114,11 +112,16 @@ The `main()` method starts that process by creating a Spring application context
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/build_an_executable_jar_mainhead.adoc[]
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/build_an_executable_jar_with_both.adoc[]
 
-You should see the following output:
+You should see output like this:
 
-    Sending message...
-    Received <Hello from RabbitMQ!>
+	91 + 96 =187.0
+	78 + 21 =99.0
+	60 * 59 =3540.0
+	91 + 49 =140.0
+	16 + 70 =86.0
+	34 * 91 =3094.0
+	32 + 97 =129.0
 
 == Summary
-Congratulations! You've just developed a simple publish-and-subscribe application with Spring and RabbitMQ. There's http://docs.spring.io/spring-amqp/reference/html/quick-tour.html[more you can do with Spring and RabbitMQ] than what is covered here, but this should provide a good start.
+Congratulations! You've just developed a simple RPC server and client application with Spring and RabbitMQ. There's http://docs.spring.io/spring-amqp/reference/html/quick-tour.html[more you can do with Spring and RabbitMQ] than what is covered here, but this should provide a good start.
 
